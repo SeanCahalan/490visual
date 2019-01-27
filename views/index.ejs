@@ -8,6 +8,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
    </head>
    <body>
+
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
         <script>
             var socket = io.connect('http://localhost');
@@ -16,6 +18,35 @@
                 socket.emit('my other event', { my: 'data' });
             });
         </script>
+
+        <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+        <script type="module">
+        import {LitElement, html} from 'lit-element';
+
+        class MyElement extends LitElement {
+
+            static get properties() {
+            return {
+                mood: {type: String}
+            };
+            }
+
+            constructor() {
+            super();
+            this.mood = 'happy';
+            }
+
+            render() {
+            return html`<style> .mood { color: green; } </style>
+                Web Components are <span class="mood">${this.mood}</span>!`;
+            }
+
+        }
+
+        customElements.define('my-element', MyElement);
+        </script>
+
+        <my-element mood="happy"></my-element>
 
       <div id="someEl">some element</div>
    </body>
