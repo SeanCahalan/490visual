@@ -3,12 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "polymer serve"
+    "start": "node app.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
+    "copy-webpack-plugin": "^4.6.0",
     "debug": "~2.6.9",
+    "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
@@ -16,9 +18,13 @@
     "lit-element": "^2.0.0-rc.5",
     "morgan": "~1.9.0",
     "socket.io": "^2.2.0",
-    "webcomponents": "^0.1.4"
+    "uws": "^99.0.0",
+    "webcomponents": "^0.1.4",
+    "webpack": "^4.29.0",
+    "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.2.4"
+    "@webcomponents/webcomponentsjs": "^2.2.4",
+    "webpack-cli": "^3.2.1"
   }
 }

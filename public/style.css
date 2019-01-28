@@ -1,0 +1,11 @@
+#correction-display{
+    display: flex;
+}
+
+.green{
+    background: #5dc15d;
+}
+
+.yellow{
+    background: yellow;
+}

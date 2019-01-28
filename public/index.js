@@ -1,25 +1,34 @@
-import { LitElement, html } from 'lit-element';
-
-// Create your custom component
-class Text extends LitElement {
-  // Declare properties
-  static get properties() {
-    return {
-      name: { type: String }
-    };
-  }
-  // Initialize properties
-  constructor() {
-    super();
-    this.name = 'World';
-  }
-  // Define a template
-  render() {
-    return html`<p>Hello, ${this.name}!</p>`;
-  }
-}
-// Register the element with the browser
-customElements.define('Text', Text);
-
 var data = {};
 var update = {};
+
+var colorMap = (tag) => {
+    switch(tag){
+        case "PERSON":
+            return 'green';
+        case "LOCATION":
+            return 'yellow';
+        default:
+            return 'plain';
+    }
+}
+
+var displayText = function(data){
+    let textDisplay = document.querySelector('#text-display');
+    textDisplay.innerHTML = data.text;
+}
+
+var displayCorrection = function(data){
+    let display = document.querySelector('#correction-display');
+    let nerData = data.nerData;
+
+    nerData.forEach( (pair, i) => {
+        let node = document.createElement("p");
+        let text = document.createTextNode(pair[0]);
+        node.classList.add(colorMap(pair[1]))
+        node.appendChild(text);
+        display.appendChild(node)
+        if(i < nerData.length - 1 ) display.appendChild( document.createTextNode( '\u00A0' ) );
+
+    })
+    //display.innerHTML = data.correctedText;
+}
