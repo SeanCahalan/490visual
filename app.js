@@ -18,7 +18,7 @@ app.set("env", process.env.NODE_ENV);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-server.listen(8083);
+server.listen(process.env.PORT || 8083);
 // WARNING: app.listen(80) will NOT work here!
 
 let title = process.env.NODE_ENV === 'production' ? 'prod' : 'dev';
