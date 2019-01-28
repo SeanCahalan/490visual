@@ -20,7 +20,7 @@ var displayText = function(data){
 var displayCorrection = function(data){
     let display = document.querySelector('#correction-display');
     let nerData = data.nerData;
-
+    console.log(data);
     nerData.forEach( (pair, i) => {
         let node = document.createElement("p");
         let text = document.createTextNode(pair[0]);
