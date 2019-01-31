@@ -74,6 +74,39 @@ var displayCorrection = function(data){
     correction.innerHTML=data.correction;
     display.appendChild(correction);
 
+    let taggedCorrection = document.createElement("div")
+    taggedCorrection.classList.add('row', 'tagged-sentence');
+    let correctionNerData = data.correctionNerData;
+    correctionNerData.forEach( (pair, i) => {
+        let node = document.createElement("div");
+        node.classList.add('col');
+
+        let wrapper = document.createElement("div");
+        wrapper.classList.add('curly-wrapper');
+
+        let entity = document.createElement("p");
+        let text = document.createTextNode(pair[0]);
+        entity.classList.add(colorMap(pair[1]))
+        entity.appendChild(text);
+        wrapper.appendChild(entity)
+        
+        let bracket = document.createElement("div");
+        bracket.classList.add("bracket");
+        wrapper.appendChild(bracket);
+        
+        node.appendChild(wrapper);
+
+        let tag = document.createElement("p");
+        text = document.createTextNode(pair[1]);
+        tag.appendChild(text);
+        tag.classList.add('tag');
+        node.appendChild(tag);
+
+        taggedCorrection.appendChild(node)
+    })
+
+    display.appendChild(taggedCorrection)
+
     let h4_2 = document.createElement('h4');
     h4_2.innerHTML="Corrected Sentence"
     display.appendChild(h4_2);
