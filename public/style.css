@@ -1,6 +1,28 @@
-#correction-display{
+body{
+    font-family: sans-serif;
+}
+
+
+.container{
+    margin: 10px;
+}
+
+.col{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 5px;
+}
+
+.row{
     display: flex;
 }
+
+
+.correction-display{
+    
+}
+
 
 .green{
     background: #5dc15d;
@@ -8,4 +30,24 @@
 
 .yellow{
     background: yellow;
+}
+
+/* .curlyBrace {
+    stroke: #000000;
+    stroke-width: 2px;
+    fill: none;
+} */
+
+.curly-wrapper{
+  
+    position: relative;
+}
+
+
+
+.bracket{
+    border: solid 1px black;
+    border-top: 0;
+    height: 10px;
+    width: 100%;
 }
