@@ -8,6 +8,8 @@ var colorMap = (tag) => {
         case "CITY":
         case "LOCATION":
             return 'yellow';
+        case "DATE":
+            return 'red';
         default:
             return 'plain';
     }

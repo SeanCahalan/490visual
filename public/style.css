@@ -32,6 +32,10 @@ body{
     background: yellow;
 }
 
+.red{
+    background: red;
+}
+
 /* .curlyBrace {
     stroke: #000000;
     stroke-width: 2px;
