@@ -3,10 +3,13 @@ var update = {};
 
 var colorMap = (tag) => {
     switch(tag){
-        case "PERSON":
+        case "MONEY":
             return 'green';
+        case "PERSON":
+            return 'blue';
         case "CITY":
         case "LOCATION":
+        case "STATE_OR_PROVINCE":
             return 'yellow';
         case "DATE":
             return 'red';
