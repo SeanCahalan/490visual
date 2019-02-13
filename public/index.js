@@ -1,6 +1,47 @@
 var data = {};
 var update = {};
 
+var sampleCode = `
+# Attempts to correct a sentence, given a string of sentence(s), and a correction prompt.
+# Lat and long will be used to determine which regexer file to use, or will call the system to dynamically create one
+# UUID used to reference another regex file containing calendar items and contact names
+# Annotated lists are sent to replace_entity, with the response stuffed into a JSON body.
+def correct_sentence(_context, _correction, location_rules="", uuid_rules=""):
+    # if region(lat, long) dne: create_clean_regex_file(new_location, rules/location.txt)
+    # if UUID dne: create_new_UUID(
+
+    dprint(location_rules)
+    with CoreNLP() as nlp:
+        response = {}
+        regex_rule_paths = location_rules + "," + uuid_rules
+        if regex_rule_paths[0] == ',':
+            regex_rule_paths = regex_rule_paths[1:]
+        dprint(regex_rule_paths)
+        context = nlp.annotate(_context, regex_rule_paths)
+        correction = nlp.annotate(remove_command_prefix(_correction), regex_rule_paths)
+
+        details = get_replacement_detail_ner(context, correction)
+        if details:
+            corrected = _context[:details['context_offset_begin']] + details['correction_text'] + \
+                        _context[details['context_offset_end']:]
+            response['corrected_ner'] = details['corrected_ner']
+        else:  # No change able to be done
+            corrected = _context
+            response['corrected_ner'] = ''
+
+        response['context'] = _context
+        if correction['sentences']:
+            response['correctionNerData'] = get_ner(correction['sentences'][0]['tokens'])
+        response['correction'] = _correction
+        response['correctedText'] = corrected
+        finished = nlp.annotate(corrected, regex_rule_paths)
+        # Case where no correction is found
+        if not finished['sentences']:
+            return {}
+        response['nerData'] = get_ner(finished['sentences'][0]['tokens'])
+        return response
+`
+
 var colorMap = (tag) => {
     switch(tag){
         case "MONEY":
@@ -18,8 +59,15 @@ var colorMap = (tag) => {
     }
 }
 
+
+
 var displayText = function(data){
     
+    let anchor = document.querySelector('#code');
+    anchor.innerHTML = sampleCode;
+    window.Prism.highlightAll();
+
+
     let display = document.querySelector('#annotate-display');
     display.innerHTML = '';
 

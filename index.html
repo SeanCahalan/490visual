@@ -1,19 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>Visualize</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Visualize</title>
 
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-      <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
-      <link rel="stylesheet" href="/public/style.css" type="text/css" />
-   </head>
-   <body>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+        <link rel="stylesheet" href="/public/style.css" type="text/css" />
+
+        <!-- CODE STYLE -->
+        <link rel="stylesheet" href="/public/stylesheets/prism.css" type="text/css">
+    </head>
+    <body>
+        <div class="row page-content">
+            <div class="col tag-display">
+                    <div id="annotate-display" class="container">
+                        <div class="tagged-sentence row"></div>
+                    </div>
+            
+                    <div id="correction-display" class="container">
+                        <div class="tagged-sentence row"></div>
+                    </div>
+            </div>
+            <div class="col code-display">
+                <pre>
+                    <code class="language-python" id="code">
+                        def soln(a):
+                            return 10 + a
+                    </code>
+                </pre>
+            </div>
+        </div>
         
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
         <script src="/public/index.js"></script>
         <script>
             // var socket = io.connect('http://localhost:8083');
@@ -34,14 +57,6 @@
                 socket.emit('my other event', { my: 'data' });
             });
         </script>
-
-        <div id="annotate-display" class="container">
-            <div class="tagged-sentence row"></div>
-        </div>
-
-        <div id="correction-display" class="container">
-            <div class="tagged-sentence row"></div>
-        </div>
-
+        <script src="/public/javascripts/prism.js"></script>
    </body>
 </html>
