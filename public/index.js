@@ -50,89 +50,57 @@ def correct_sentence(_context, _correction, location_rules="", uuid_rules=""):
 `
 
 var sampleCode2 = `
-def call_counter(func):
-    def helper(*args, **kwargs):
-        helper.calls += 1
-        return func(*args, **kwargs)
+class CoreNLP:
+    base_props = {'annotators': 'tokenize,ssplit,lemma,ner,regexner',
+                  'ner.applyFineGrained': 'false',
+                  'regexner.backgroundSymbol': 'ORGANIZATION,PERSON,O',
+                  'ner.model': 'edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz',
+                  'pipelineLanguage': 'en',
+                  'ner.buildEntityMentions': 'true',
+                  'outputFormat': 'json'}
 
-    helper.calls = 0
-    helper.__name__ = func.__name__
-    return helper
+    def __init__(self, _host='http://localhost', _port=nlp_server_port):
+        self.nlp = StanfordCoreNLP(_host, port=_port)
 
+    def __enter__(self):
+        return self
 
-def memoize(func):
-    global mem
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.nlp.close()
 
-    def memoizer(*args, **kwargs):
-        key = str(args) + str(kwargs)
-        if key not in mem:
-            mem[key] = func(*args, **kwargs)
-        return mem[key]
-
-    return memoizer
-
-
-def clear_mem():
-    global mem
-    mem = {}
-
-
-# Distances ARE case sensitive
-def get_corrections(sentence):
-    min_distance = len(sentence)
-    script_dir = os.path.dirname(__file__)
-    # TODO: Optimize this, so the file is not opened as many damn times
-    with open(os.path.join(script_dir, "../../rules/kingston.txt")) as file:
-        print("Open file")
-        result = []
-        for line in file:
-            term = line.split('\t')[0]
-            dist = lev(sentence, term)
-            if dist < min_distance:
-                min_distance = dist
-                result = [term]
-            elif dist == min_distance:
-                result.append(term)
-    # Automatically cast as a tuple
-    return min_distance, result
+    def annotate(self, _text, regexner_mapping=""):
+        full_props = self.base_props
+        if len(regexner_mapping) < 2:
+            regexner_mapping = rules_dir + "/default.txt"
+        full_props['regexner.mapping'] = regexner_mapping
+        return json.loads(self.nlp.annotate(_text, full_props))
 
 
-def find_entities(sentence, window_size=4):
-    clear_mem()
-    sentence = sentence.split(" ")
-    result = []
-    for size in range(1, window_size + 1):
-        if size <= len(sentence):
-            for index in range(len(sentence) - size + 1):
-                a = ' '.join(sentence[index:index + size])
-                res = get_corrections(a)
-                if res[1]:
-                    result.append((*res, a))
-    result = sorted(result)
-    return result
-
-
-# Calculates the Levenshtein distance dynamically,
-# currently using a substitution distance of 2.
-# Since types are dynamic, works for both strings
-# as well as arrays of elements
-@call_counter
-@memoize
-def lev(a, b):
-    a_len = len(a)
-    b_len = len(b)
-    if a_len == 0:
-        return b_len
-    elif b_len == 0:
-        return a_len
-    elif a[a_len - 1] == b[b_len - 1]:
-        cost = 0
-    else:
-        cost = 2
-
-    return min(lev(a, b[:(b_len - 1)]) + 1,
-               lev(a[:(a_len - 1)], b) + 1,
-               lev(a[:(a_len - 1)], b[:(b_len - 1)]) + cost)
+# Given a list of lists, return a merged list that
+# groups items with the same nested second index.
+# For [[word, ner], [word, ner]], common ner groups are merged
+def merge_tags_in_list(tagged_list):
+    token_buffer = ''
+    entity = ''
+    merged_list = []
+    start_offset = 0
+    end_offset = 0
+    for token in tagged_list:
+        # Continuation
+        if token[1] == entity:
+            # This operates under the assumption that two
+            # consecutive entities are separated by a space
+            token_buffer += " " + token[0]
+            end_offset = token[3]
+        else:
+            if token_buffer != '':
+                merged_list.append((token_buffer, entity, start_offset, end_offset))
+            token_buffer = token[0]
+            entity = token[1]
+            start_offset = token[2]
+            end_offset = token[3]
+    merged_list.append((token_buffer, entity, start_offset, end_offset))
+    return merged_list
 `
 
 var colorMap = (tag) => {
@@ -157,7 +125,7 @@ var colorMap = (tag) => {
 var displayText = function(data){
     
     let anchor = document.querySelector('#code');
-    anchor.innerHTML = sampleCode;
+    anchor.innerHTML = sampleCode2;
     window.Prism.highlightAll();
 
     let display = document.querySelector('#annotate-display');
@@ -209,7 +177,7 @@ var displayCorrection = function(data){
     let display = document.querySelector('#correction-display');
 
     let anchor = document.querySelector('#code');
-    anchor.innerHTML = sampleCode2;
+    anchor.innerHTML = sampleCode;
     window.Prism.highlightAll();
 
     let taggedCorrected = document.createElement("div")
