@@ -42,7 +42,7 @@
             // var socket = io.connect('http://localhost:8083');
             var socket = io();
             socket.on('annotate', function (data) {
-                console.log(data);
+                log("ANNOTATION:", data)
                 data = data;
                 displayText(data);
                 
@@ -50,7 +50,7 @@
             });
 
             socket.on('correction', function (data) {
-                console.log(data);
+                log("CORRECTION:", data)
                 data = data;
                 displayCorrection(data);
                 
@@ -58,7 +58,7 @@
             });
 
             socket.on('debug', function (data) {
-                console.log(data);
+                log("DEBUG:", data)
        
                 socket.emit('my other event', { my: 'data' });
             });

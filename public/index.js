@@ -1,6 +1,11 @@
 var data = {};
 var update = {};
 
+var log = function(msg, data){
+    console.log(msg, data)
+}
+
+
 var sampleCode = `
 # Attempts to correct a sentence, given a string of sentence(s), and a correction prompt.
 # Lat and long will be used to determine which regexer file to use, or will call the system to dynamically create one
@@ -164,7 +169,6 @@ var displayText = function(data){
     display.appendChild(taggedContext);
 
     let nerData = data.nerData;
-    console.log(data);
     nerData.forEach( (pair, i) => {
         let node = document.createElement("div");
         node.classList.add('col');
@@ -207,7 +211,6 @@ var displayCorrection = function(data){
     display.appendChild(taggedCorrected)
 
     let nerData = data.nerData;
-    console.log(data);
     nerData.forEach( (pair, i) => {
         let node = document.createElement("div");
         node.classList.add('col');
