@@ -13,8 +13,49 @@ body{
     box-sizing: border-box;
 }
 
+#annotate-display{
+    border-bottom: 0;
+}
+
+
+
 .container{
-    margin: 10px;
+    color: white;
+    border: .3em solid hsl(0, 0%, 33%);
+    border-right: 0;
+    background: hsl(0, 0%, 8%);
+    height: 50%;
+    width: 100%;
+    overflow-y: scroll;
+    position: relative;
+}
+
+.container.annotate{
+    border-bottom: 0;
+}
+
+.container .content{
+    padding: 40px 10px 10px 10px;
+}
+
+.container .title{
+    z-index: 100;
+    background: hsl(0, 0%, 8%);
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: calc(40% - 22px);
+    position: fixed;
+    border-bottom: .3em solid hsl(0, 0%, 33%);
+}
+
+/* #annotate-display .title{
+
+} */
+
+#correction-display .title{
+    top: calc(50% + 3em);
 }
 
 .page-content{
@@ -35,7 +76,7 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 5px;
+    margin: 0;
 }
 
 pre[class*="language-"]{
@@ -55,19 +96,23 @@ pre[class*="language-"]{
 }
 
 .blue{
-    background: lightblue;
+    color: rgb(0, 132, 255);
 }
 
 .green{
-    background: #5dc15d;
+    color: #5dc15d;
 }
 
 .yellow{
-    background: yellow;
+    color: yellow;
 }
 
 .red{
-    background: red;
+    color: red;
+}
+
+.magenta{
+    color: magenta;
 }
 
 /* .curlyBrace {
@@ -84,7 +129,7 @@ pre[class*="language-"]{
 
 
 .bracket{
-    border: solid 1px black;
+    border: solid 1px white;
     border-top: 0;
     height: 10px;
     width: 100%;

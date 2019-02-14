@@ -42,18 +42,104 @@ def correct_sentence(_context, _correction, location_rules="", uuid_rules=""):
         return response
 `
 
+var sampleCode2 = `
+def call_counter(func):
+    def helper(*args, **kwargs):
+        helper.calls += 1
+        return func(*args, **kwargs)
+
+    helper.calls = 0
+    helper.__name__ = func.__name__
+    return helper
+
+
+def memoize(func):
+    global mem
+
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in mem:
+            mem[key] = func(*args, **kwargs)
+        return mem[key]
+
+    return memoizer
+
+
+def clear_mem():
+    global mem
+    mem = {}
+
+
+# Distances ARE case sensitive
+def get_corrections(sentence):
+    min_distance = len(sentence)
+    script_dir = os.path.dirname(__file__)
+    # TODO: Optimize this, so the file is not opened as many damn times
+    with open(os.path.join(script_dir, "../../rules/kingston.txt")) as file:
+        print("Open file")
+        result = []
+        for line in file:
+            term = line.split('\t')[0]
+            dist = lev(sentence, term)
+            if dist < min_distance:
+                min_distance = dist
+                result = [term]
+            elif dist == min_distance:
+                result.append(term)
+    # Automatically cast as a tuple
+    return min_distance, result
+
+
+def find_entities(sentence, window_size=4):
+    clear_mem()
+    sentence = sentence.split(" ")
+    result = []
+    for size in range(1, window_size + 1):
+        if size <= len(sentence):
+            for index in range(len(sentence) - size + 1):
+                a = ' '.join(sentence[index:index + size])
+                res = get_corrections(a)
+                if res[1]:
+                    result.append((*res, a))
+    result = sorted(result)
+    return result
+
+
+# Calculates the Levenshtein distance dynamically,
+# currently using a substitution distance of 2.
+# Since types are dynamic, works for both strings
+# as well as arrays of elements
+@call_counter
+@memoize
+def lev(a, b):
+    a_len = len(a)
+    b_len = len(b)
+    if a_len == 0:
+        return b_len
+    elif b_len == 0:
+        return a_len
+    elif a[a_len - 1] == b[b_len - 1]:
+        cost = 0
+    else:
+        cost = 2
+
+    return min(lev(a, b[:(b_len - 1)]) + 1,
+               lev(a[:(a_len - 1)], b) + 1,
+               lev(a[:(a_len - 1)], b[:(b_len - 1)]) + cost)
+`
+
 var colorMap = (tag) => {
     switch(tag){
         case "MONEY":
             return 'green';
         case "PERSON":
-            return 'blue';
+            return 'red';
         case "CITY":
         case "LOCATION":
         case "STATE_OR_PROVINCE":
-            return 'yellow';
+            return 'blue';
         case "DATE":
-            return 'red';
+            return 'magenta';
         default:
             return 'plain';
     }
@@ -69,14 +155,11 @@ var displayText = function(data){
 
 
     let display = document.querySelector('#annotate-display');
-    display.innerHTML = '';
 
     let taggedContext = document.createElement("div")
     taggedContext.classList.add('row', 'tagged-sentence');
 
-    let h3 = document.createElement('h3');
-    h3.innerHTML="Annotated Context Sentence"
-    display.appendChild(h3);
+
 
     display.appendChild(taggedContext);
 
@@ -113,56 +196,10 @@ var displayText = function(data){
 
 var displayCorrection = function(data){
     let display = document.querySelector('#correction-display');
-    display.innerHTML = '';
 
-    let h3 = document.createElement('h3');
-    h3.innerHTML="Correction"
-    display.appendChild(h3);
-
-    let h4_1 = document.createElement('h4');
-    h4_1.innerHTML="Correction Statement"
-    display.appendChild(h4_1);
-
-    let correction = document.createElement('p');
-    correction.innerHTML=data.correction;
-    display.appendChild(correction);
-
-    let taggedCorrection = document.createElement("div")
-    taggedCorrection.classList.add('row', 'tagged-sentence');
-    let correctionNerData = data.correctionNerData;
-    correctionNerData.forEach( (pair, i) => {
-        let node = document.createElement("div");
-        node.classList.add('col');
-
-        let wrapper = document.createElement("div");
-        wrapper.classList.add('curly-wrapper');
-
-        let entity = document.createElement("p");
-        let text = document.createTextNode(pair[0]);
-        entity.classList.add(colorMap(pair[1]))
-        entity.appendChild(text);
-        wrapper.appendChild(entity)
-        
-        let bracket = document.createElement("div");
-        bracket.classList.add("bracket");
-        wrapper.appendChild(bracket);
-        
-        node.appendChild(wrapper);
-
-        let tag = document.createElement("p");
-        text = document.createTextNode(pair[1]);
-        tag.appendChild(text);
-        tag.classList.add('tag');
-        node.appendChild(tag);
-
-        taggedCorrection.appendChild(node)
-    })
-
-    display.appendChild(taggedCorrection)
-
-    let h4_2 = document.createElement('h4');
-    h4_2.innerHTML="Corrected Sentence"
-    display.appendChild(h4_2);
+    let anchor = document.querySelector('#code');
+    anchor.innerHTML = sampleCode2;
+    window.Prism.highlightAll();
 
     let taggedCorrected = document.createElement("div")
     taggedCorrected.classList.add('row', 'tagged-sentence');
