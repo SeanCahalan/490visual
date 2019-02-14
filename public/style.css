@@ -79,6 +79,10 @@ body{
     margin: 0;
 }
 
+.tagged-sentence >.col{
+    margin-right: 5px;
+}
+
 pre[class*="language-"]{
     width: 100%;
     margin: 0 !important;
