@@ -42,6 +42,12 @@ app.post('/correction', function(req, res) {
     res.end();
 })
 
+app.post('/debug', function(req, res) {
+    console.log(req.body)
+    io.emit('debug', req.body)
+    res.end();
+})
+
 io.on('connection', function (socket) {
     socket.emit('news', { text: 'hello' });
     socket.on('my other event', function (data) {
