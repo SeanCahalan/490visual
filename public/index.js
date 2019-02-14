@@ -6,6 +6,8 @@ var log = function(msg, data){
 }
 
 
+
+
 var sampleCode = `
 # Attempts to correct a sentence, given a string of sentence(s), and a correction prompt.
 # Lat and long will be used to determine which regexer file to use, or will call the system to dynamically create one
@@ -158,7 +160,6 @@ var displayText = function(data){
     anchor.innerHTML = sampleCode;
     window.Prism.highlightAll();
 
-
     let display = document.querySelector('#annotate-display');
 
     let taggedContext = document.createElement("div")
@@ -196,6 +197,12 @@ var displayText = function(data){
 
         taggedContext.appendChild(node)
     })
+
+    let container = document.querySelector('.container.annotate');
+    setTimeout(()=>{
+        container.scrollTop = container.scrollHeight;
+    }, 200)
+    
 }
 
 var displayCorrection = function(data){
@@ -238,4 +245,9 @@ var displayCorrection = function(data){
 
         taggedCorrected.appendChild(node)
     })
+
+    let container = document.querySelector('.container.correct');
+    setTimeout(()=>{
+        container.scrollTop = container.scrollHeight;
+    }, 200)
 }
