@@ -79,6 +79,11 @@ body{
     margin: 0;
 }
 
+.tagged-sentence{
+    flex-wrap: wrap;
+    margin-bottom: 30px
+}
+
 .tagged-sentence >.col{
     margin-right: 5px;
 }
